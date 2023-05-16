@@ -4,13 +4,14 @@ import pygame
 from pygame.locals import *
 import time
 import random
+from dataLoader import DataLoader
 
 SIZE = 40
 BACKGROUND_COLOR = (110, 110, 5)
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 SPEED = 4
-
+MOVES_TIMER = 0.5
 class Apple:
     def __init__(self, parent_screen):
         self.parent_screen = parent_screen
@@ -86,10 +87,10 @@ class Snake:
         self.y.append(-1)
 
 class Game:
-    def __init__(self):
+    def __init__(self, path):
         pygame.init()
         pygame.display.set_caption("Codebasics Snake And Apple Game")
-
+        self.move_generator = DataLoader(path).move_generator()
         pygame.mixer.init()
         # self.play_background_music()
 
@@ -159,11 +160,48 @@ class Game:
         pygame.mixer.music.pause()
         pygame.display.flip()
 
+
     def run(self):
         running = True
         pause = False
-
+        start_time = time.time()
         while running:
+
+            if not pause:
+                '''
+                class_names = {
+                    0: 'Up',
+                    1: 'Down',
+                    2: 'Right',
+                    3: 'Left',
+                    4: 'Blink'
+                }
+                '''
+
+                next_move = None
+
+                now = time.time()
+
+                print("start: ", start_time)
+                print("now: ", now)
+
+                if now - start_time > MOVES_TIMER:
+                    next_move = next(self.move_generator)
+                    print("next move", next_move)
+                    start_time = now
+
+                if next_move == 0:
+                    self.snake.move_up()
+
+                if next_move == 1:
+                    self.snake.move_down()
+
+                if next_move == 2:
+                    self.snake.move_right()
+
+                if next_move == 3:
+                    self.snake.move_left()
+
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
@@ -172,8 +210,9 @@ class Game:
                     if event.key == K_RETURN:
                         pygame.mixer.music.unpause()
                         pause = False
-
+                    print("eyad")
                     if not pause:
+
                         if event.key == K_LEFT:
                             self.snake.move_left()
 
@@ -202,5 +241,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game()
+    game = Game(r"../../Data/Data Handling Concat.csv")
     game.run()
