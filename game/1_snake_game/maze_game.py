@@ -12,7 +12,8 @@ BACKGROUND_COLOR = (110, 110, 5)
 SCREEN_WIDTH = SIZE * 11
 SCREEN_HEIGHT = SIZE * 11
 SPEED = 10
-MOVES_TIMER = 0.3
+MOVES_TIMER = 0.7
+DELAY = 3
 
 class Maze:
     def __init__(self, parent_screen):
@@ -160,15 +161,21 @@ class Game:
 
         if state == "win":
             line1 = font.render("Congratulations! You Won!", True, (255, 255, 255))
+            self.surface.blit(line1, (50, 50))
+            line2 = font.render("To play again press Enter.", True, (255, 255, 255))
+            line3 = font.render("To exit press Escape!.", True, (255, 255, 255))
+            self.surface.blit(line2, (50, 120))
+            self.surface.blit(line3, (50, 190))
         elif state == "lose":
             line1 = font.render("Sorry You Lost :(", True, (255, 255, 255))
-
-        self.surface.blit(line1, (50, 50))
-        line2 = font.render("To play again press Enter.", True, (255, 255, 255))
-        line3 = font.render("To exit press Escape!.", True, (255, 255, 255))
-
-        self.surface.blit(line2, (50, 120))
-        self.surface.blit(line3, (50, 190))
+            self.surface.blit(line1, (50, 50))
+            line2 = font.render("To play again press Enter.", True, (255, 255, 255))
+            line3 = font.render("To exit press Escape!.", True, (255, 255, 255))
+            self.surface.blit(line2, (50, 120))
+            self.surface.blit(line3, (50, 190))
+        elif state == "no moves":
+            line1 = font.render("You have no moves left", True, (255, 255, 255))
+            self.surface.blit(line1, (50, 50))
         pygame.mixer.music.pause()
         pygame.display.flip()
 
@@ -179,7 +186,7 @@ class Game:
         start_time = time.time()
         while running:
 
-            # 1 1 3 3 1 1 3 3 1 1 1 1 2 2 1 2 2 1 4
+            # 1 1 3 3 1 1 3 3 1 1 4 4 1 1 2 2 1 2 2 1 4
 
             '''
             class_names = {
@@ -201,7 +208,8 @@ class Game:
                 try:
                     next_move = next(self.move_generator)
                 except:
-                    print("end of moves list")
+                    self.show_game_over("no moves")
+                    pause = True
                 print("next move", next_move)
                 start_time = now
 
@@ -209,7 +217,7 @@ class Game:
                 if pause:
                     print("unpause")
                 else:
-                    time.sleep(3)
+                    time.sleep(DELAY)
                     print("pause")
                 pause = not pause
 
@@ -267,7 +275,7 @@ class Game:
                     self.show_game_over("win")
 
                 pause = True
-                time.sleep(6)
+                time.sleep(DELAY*2)
                 self.reset()
 
             time.sleep(1/SPEED)

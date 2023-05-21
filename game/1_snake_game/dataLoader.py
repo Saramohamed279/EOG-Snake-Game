@@ -6,11 +6,11 @@ script_dir = os.path.dirname( __file__ )
 mymodule_dir = os.path.join( script_dir, '..', '..', 'Test')
 sys.path.append( mymodule_dir )
 
-import test_script_py_file
+import script_py_file
 class DataLoader:
 
     def __init__(self):
-        self.data = test_script_py_file.get_predictions()
+        self.data = script_py_file.get_predictions()
         print(self.data)
 
     def move_generator(self):
