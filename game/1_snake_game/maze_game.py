@@ -12,7 +12,7 @@ BACKGROUND_COLOR = (110, 110, 5)
 SCREEN_WIDTH = SIZE * 11
 SCREEN_HEIGHT = SIZE * 11
 SPEED = 10
-MOVES_TIMER = 1
+MOVES_TIMER = 0.3
 
 class Maze:
     def __init__(self, parent_screen):
@@ -98,10 +98,10 @@ class Player:
 
 
 class Game:
-    def __init__(self, path):
+    def __init__(self, ):
         pygame.init()
         pygame.display.set_caption("Codebasics Snake And Apple Game")
-        self.move_generator = DataLoader(path).move_generator()
+        self.move_generator = DataLoader().move_generator()
         pygame.mixer.init()
 
         self.surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -178,6 +178,9 @@ class Game:
         pause = False
         start_time = time.time()
         while running:
+
+            # 1 1 3 3 1 1 3 3 1 1 1 1 2 2 1 2 2 1 4
+
             '''
             class_names = {
                 0: 'Up',
@@ -187,21 +190,30 @@ class Game:
                 4: 'Blink'
             }
             '''
+
+
+
+            next_move = None
+
+            now = time.time()
+
+            if now - start_time > MOVES_TIMER:
+                try:
+                    next_move = next(self.move_generator)
+                except:
+                    print("end of moves list")
+                print("next move", next_move)
+                start_time = now
+
+            if next_move == 4:
+                if pause:
+                    print("unpause")
+                else:
+                    time.sleep(3)
+                    print("pause")
+                pause = not pause
+
             if not pause:
-
-
-                 next_move = None
-
-                 now = time.time()
-
-                 # print("start: ", start_time)
-                 # print("now: ", now)
-
-                 if now - start_time > MOVES_TIMER:
-                     next_move = next(self.move_generator)
-                     print("next move", next_move)
-                     start_time = now
-
                  if next_move == 0:
                      self.player.move_up()
 
@@ -213,6 +225,8 @@ class Game:
 
                  if next_move == 3:
                      self.player.move_left()
+
+
 
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
@@ -253,11 +267,12 @@ class Game:
                     self.show_game_over("win")
 
                 pause = True
+                time.sleep(6)
                 self.reset()
 
             time.sleep(1/SPEED)
 
 
 if __name__ == '__main__':
-    game = Game(r"../../Data/Data Handling Concat.csv")
+    game = Game()
     game.run()
