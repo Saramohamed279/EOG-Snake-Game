@@ -80,9 +80,6 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 This project is open source and available under the MIT License.
 
-## 👤 Author
-
-**Saramohamed279**
 
 ## 🔗 References
 
